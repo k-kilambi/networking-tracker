@@ -40,9 +40,12 @@ export function ContactForm({
   const values = state?.values ?? contact;
 
   return (
-    <form action={formAction} className="max-w-xl space-y-4">
+    // noValidate swaps the browser's email error for our friendlier message.
+    <form action={formAction} noValidate className="max-w-xl space-y-4">
       {TEXT_FIELDS.map((field) => {
-        const showNameError = field.name === "name" && state?.nameError;
+        const fieldError =
+          (field.name === "name" && state?.nameError) ||
+          (field.name === "email" && state?.emailError);
 
         return (
           <div key={field.name} className="space-y-1.5">
@@ -55,12 +58,12 @@ export function ContactForm({
               name={field.name}
               type={"type" in field ? field.type : "text"}
               defaultValue={values?.[field.name] ?? ""}
-              aria-invalid={showNameError ? true : undefined}
-              aria-describedby={showNameError ? "name-error" : undefined}
+              aria-invalid={fieldError ? true : undefined}
+              aria-describedby={fieldError ? `${field.name}-error` : undefined}
             />
-            {showNameError && (
-              <p id="name-error" role="alert" className="text-sm text-danger">
-                {state.nameError}
+            {fieldError && (
+              <p id={`${field.name}-error`} role="alert" className="text-sm text-danger">
+                {fieldError}
               </p>
             )}
           </div>
@@ -68,7 +71,15 @@ export function ContactForm({
       })}
       <div className="space-y-1.5">
         <Label htmlFor="notes">Notes</Label>
-        <Textarea id="notes" name="notes" defaultValue={values?.notes ?? ""} />
+        <Textarea
+          id="notes"
+          name="notes"
+          defaultValue={values?.notes ?? ""}
+          aria-describedby="notes-hint"
+        />
+        <p id="notes-hint" className="text-sm text-muted-foreground">
+          For background on this person. You can add tasks, like a follow-up, on the next screen.
+        </p>
       </div>
       {state?.error && (
         <p role="alert" className="text-sm text-danger">

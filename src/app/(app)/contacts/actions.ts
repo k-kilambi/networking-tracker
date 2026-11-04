@@ -9,8 +9,19 @@ type ContactValues = ReturnType<typeof readContact>;
 export type ContactFormState = {
   error?: string;
   nameError?: string;
+  emailError?: string;
   values?: ContactValues;
 } | null;
+
+function validateContact(values: ContactValues): ContactFormState {
+  const nameError = values.name ? undefined : "Please add this person's name.";
+  const emailError =
+    values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
+      ? "That doesn't look like an email. You can also leave it blank."
+      : undefined;
+
+  return nameError || emailError ? { nameError, emailError, values } : null;
+}
 
 function readContact(formData: FormData) {
   const optional = (name: string) => {
@@ -35,8 +46,9 @@ export async function createContact(
   formData: FormData,
 ): Promise<ContactFormState> {
   const values = readContact(formData);
-  if (!values.name) {
-    return { nameError: "Please add this person's name.", values };
+  const invalid = validateContact(values);
+  if (invalid) {
+    return invalid;
   }
 
   const supabase = await createClient();
@@ -60,8 +72,9 @@ export async function updateContact(
   formData: FormData,
 ): Promise<ContactFormState> {
   const values = readContact(formData);
-  if (!values.name) {
-    return { nameError: "Please add this person's name.", values };
+  const invalid = validateContact(values);
+  if (invalid) {
+    return invalid;
   }
 
   const supabase = await createClient();
