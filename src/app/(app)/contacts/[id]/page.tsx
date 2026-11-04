@@ -1,13 +1,17 @@
 import Link from "next/link";
+import { createTask } from "@/app/(app)/tasks/actions";
 import { ConversationForm } from "@/components/conversation-form";
 import { ConversationList } from "@/components/conversation-list";
 import { DeleteContactButton } from "@/components/delete-contact-button";
 import { StarButton } from "@/components/star-button";
+import { TaskForm } from "@/components/task-form";
+import { TaskRow } from "@/components/task-row";
 import { Button } from "@/components/ui/button";
 import { getContact } from "@/lib/contacts";
 import type { Conversation } from "@/lib/conversations";
 import { todayString } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import type { Task } from "@/lib/tasks";
 
 export default async function ContactPage({
   params,
@@ -16,7 +20,7 @@ export default async function ContactPage({
   const contact = await getContact(id);
 
   const supabase = await createClient();
-  const [{ data: conversationRows }, { count: taskCount }] = await Promise.all([
+  const [{ data: conversationRows }, { data: taskRows }] = await Promise.all([
     supabase
       .from("conversations")
       .select("*")
@@ -25,10 +29,18 @@ export default async function ContactPage({
       .order("created_at", { ascending: false }),
     supabase
       .from("tasks")
-      .select("*", { count: "exact", head: true })
-      .eq("contact_id", contact.id),
+      .select("*")
+      .eq("contact_id", contact.id)
+      .order("due_date"),
   ]);
   const conversations: Conversation[] = conversationRows ?? [];
+  const tasks: Task[] = taskRows ?? [];
+  const today = todayString();
+  // Unfinished tasks first, soonest due at the top.
+  const sortedTasks = [
+    ...tasks.filter((task) => task.status !== "done"),
+    ...tasks.filter((task) => task.status === "done"),
+  ];
 
   const details = [
     { label: "Company", value: contact.company },
@@ -66,7 +78,7 @@ export default async function ContactPage({
             id={contact.id}
             name={contact.name}
             conversationCount={conversations.length}
-            taskCount={taskCount ?? 0}
+            taskCount={tasks.length}
           />
         </div>
       </div>
@@ -80,8 +92,27 @@ export default async function ContactPage({
       </dl>
 
       <section className="mt-8 space-y-3">
+        <h2 className="text-lg font-semibold">Tasks</h2>
+        <TaskForm
+          action={createTask.bind(null, contact.id)}
+          conversations={conversations}
+          defaultDueDate={today}
+          submitLabel="Add task"
+        />
+        {sortedTasks.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No tasks for this person yet.</p>
+        ) : (
+          <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
+            {sortedTasks.map((task) => (
+              <TaskRow key={task.id} task={task} />
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mt-8 space-y-3">
         <h2 className="text-lg font-semibold">Conversations</h2>
-        <ConversationForm contactId={contact.id} today={todayString()} />
+        <ConversationForm contactId={contact.id} today={today} />
         <ConversationList conversations={conversations} />
       </section>
     </div>
