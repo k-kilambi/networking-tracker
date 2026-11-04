@@ -35,11 +35,16 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
               Dashboard
             </Link>
           </nav>
-          <form action={logOut}>
-            <Button type="submit" variant="outline" size="sm">
-              Log out
+          <div className="flex items-center gap-2">
+            <Button size="sm" nativeButton={false} render={<Link href="/contacts/new" />}>
+              Add contact
             </Button>
-          </form>
+            <form action={logOut}>
+              <Button type="submit" variant="outline" size="sm">
+                Log out
+              </Button>
+            </form>
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
