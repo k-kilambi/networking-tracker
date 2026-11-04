@@ -37,3 +37,9 @@ Response summary: removed the brief from the files to be committed, added it to 
 Context: the agent's attempt to force-push over the old branch was blocked by a Claude Code safety check. The student chose a new branch with a single clean commit, and to delete the old `feature/tooling` branch on GitHub personally.
 
 Response summary: created `feature/project-tooling` without the brief and pushed it.
+
+## Prompt 6: old branch deleted
+
+> Deleted it
+
+Response summary: confirmed the brief is no longer on any branch. The old commit still opens at its exact address, which nothing in the repo links to. Opened this PR.
