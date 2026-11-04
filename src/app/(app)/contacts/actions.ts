@@ -4,7 +4,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export type ContactFormState = { error: string } | null;
+type ContactValues = ReturnType<typeof readContact>;
+
+export type ContactFormState = {
+  error?: string;
+  nameError?: string;
+  values?: ContactValues;
+} | null;
 
 function readContact(formData: FormData) {
   const optional = (name: string) => {
@@ -28,15 +34,20 @@ export async function createContact(
   _previous: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  const values = readContact(formData);
+  if (!values.name) {
+    return { nameError: "Please add this person's name.", values };
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("contacts")
-    .insert(readContact(formData))
+    .insert(values)
     .select("id")
     .single();
 
   if (error) {
-    return { error: "We couldn't save this contact. Please try again." };
+    return { error: "We couldn't save this contact. Please try again.", values };
   }
 
   revalidatePath("/contacts");
@@ -48,14 +59,16 @@ export async function updateContact(
   _previous: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  const values = readContact(formData);
+  if (!values.name) {
+    return { nameError: "Please add this person's name.", values };
+  }
+
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("contacts")
-    .update(readContact(formData))
-    .eq("id", id);
+  const { error } = await supabase.from("contacts").update(values).eq("id", id);
 
   if (error) {
-    return { error: "We couldn't save your changes. Please try again." };
+    return { error: "We couldn't save your changes. Please try again.", values };
   }
 
   revalidatePath("/contacts");
