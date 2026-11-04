@@ -17,6 +17,14 @@ export function addDays(date: string, days: number) {
   return result.toISOString().slice(0, 10);
 }
 
+export function formatShortDate(date: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(`${date}T00:00:00Z`));
+}
+
 export function formatDate(date: string) {
   return new Intl.DateTimeFormat("en-US", {
     timeZone: "UTC",
