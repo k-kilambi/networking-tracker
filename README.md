@@ -10,8 +10,8 @@ A personal CRM and task tracker for job-search networking. It starts with who yo
 - **Contacts:** add, view, edit, and delete people, with search, a company filter, and sorting.
 - **Stars:** mark priority people and see them in one place.
 - **Conversations:** log the date, type, and notes on a contact's page.
-- **Tasks:** add follow-ups with a due date, priority, status, and notes. Links in notes are clickable.
-- **Home:** see what needs attention and what's coming up in the next 7 days, grouped by person and company.
+- **Task details:** add follow-ups with a due date, priority, status, and notes. Links in notes are clickable.
+- **Tasks:** the main page shows what needs attention and what's coming up in the next 7 days, grouped by person and company.
 - **Dashboard:** see open tasks, overdue tasks, conversations this month, and a chart of conversations per week.
 
 ## Tools
