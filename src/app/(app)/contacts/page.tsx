@@ -51,12 +51,7 @@ export default async function ContactsPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Contacts</h1>
-        <Button nativeButton={false} render={<Link href="/contacts/new" />}>
-          Add contact
-        </Button>
-      </div>
+      <h1 className="text-xl font-semibold">Contacts</h1>
 
       <form className="mt-4 flex flex-wrap items-end gap-2" action="/contacts">
         <label className="min-w-48 flex-1 text-sm font-medium">
