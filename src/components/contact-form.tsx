@@ -36,23 +36,39 @@ export function ContactForm({
   submitLabel,
 }: ContactFormProps) {
   const [state, formAction, isPending] = useActionState(action, null);
+  // After an error, keep what was typed instead of clearing the form.
+  const values = state?.values ?? contact;
 
   return (
     <form action={formAction} className="max-w-xl space-y-4">
-      {TEXT_FIELDS.map((field) => (
-        <div key={field.name} className="space-y-1.5">
-          <Label htmlFor={field.name}>{field.label}</Label>
-          <Input
-            id={field.name}
-            name={field.name}
-            type={"type" in field ? field.type : "text"}
-            defaultValue={contact?.[field.name] ?? ""}
-          />
-        </div>
-      ))}
+      {TEXT_FIELDS.map((field) => {
+        const showNameError = field.name === "name" && state?.nameError;
+
+        return (
+          <div key={field.name} className="space-y-1.5">
+            <Label htmlFor={field.name}>
+              {field.label}
+              {field.name === "name" && <span className="text-danger"> *</span>}
+            </Label>
+            <Input
+              id={field.name}
+              name={field.name}
+              type={"type" in field ? field.type : "text"}
+              defaultValue={values?.[field.name] ?? ""}
+              aria-invalid={showNameError ? true : undefined}
+              aria-describedby={showNameError ? "name-error" : undefined}
+            />
+            {showNameError && (
+              <p id="name-error" role="alert" className="text-sm text-danger">
+                {state.nameError}
+              </p>
+            )}
+          </div>
+        );
+      })}
       <div className="space-y-1.5">
         <Label htmlFor="notes">Notes</Label>
-        <Textarea id="notes" name="notes" defaultValue={contact?.notes ?? ""} />
+        <Textarea id="notes" name="notes" defaultValue={values?.notes ?? ""} />
       </div>
       {state?.error && (
         <p role="alert" className="text-sm text-danger">
