@@ -16,6 +16,10 @@ export type Task = {
   created_at: string;
 };
 
+export type TaskWithContact = Task & {
+  contacts: { name: string; company: string | null };
+};
+
 export const PRIORITY_CLASSES: Record<TaskPriority, string> = {
   high: "bg-danger/10 text-danger",
   medium: "bg-amber-100 text-amber-800",
