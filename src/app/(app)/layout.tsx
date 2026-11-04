@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
               Networking Tracker
             </Link>
             <Link href="/" className="text-muted-foreground hover:text-foreground">
-              Home
+              Tasks
             </Link>
             <Link href="/contacts" className="text-muted-foreground hover:text-foreground">
               Contacts

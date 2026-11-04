@@ -34,7 +34,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Home</h1>
+        <h1 className="text-xl font-semibold">Tasks</h1>
         <PriorityFilter selected={priority} />
       </div>
 
