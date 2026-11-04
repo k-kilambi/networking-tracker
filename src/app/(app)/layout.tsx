@@ -28,6 +28,9 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
             <Link href="/contacts" className="text-muted-foreground hover:text-foreground">
               Contacts
             </Link>
+            <Link href="/starred" className="text-muted-foreground hover:text-foreground">
+              Starred
+            </Link>
           </nav>
           <form action={logOut}>
             <Button type="submit" variant="outline" size="sm">

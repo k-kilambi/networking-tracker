@@ -14,8 +14,11 @@ export type Contact = {
   created_at: string;
 };
 
+// A user can star a contact once, so Supabase returns one star or null, not a list.
+export type ContactWithStar = Contact & { stars: { id: number } | null };
+
 // Row Level Security means another user's contact comes back as not found.
-export async function getContact(idParam: string): Promise<Contact> {
+export async function getContact(idParam: string): Promise<ContactWithStar> {
   const id = Number(idParam);
   if (!Number.isInteger(id)) {
     notFound();
@@ -24,7 +27,7 @@ export async function getContact(idParam: string): Promise<Contact> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("contacts")
-    .select("*")
+    .select("*, stars(id)")
     .eq("id", id)
     .maybeSingle();
 

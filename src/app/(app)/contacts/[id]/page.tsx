@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DeleteContactButton } from "@/components/delete-contact-button";
+import { StarButton } from "@/components/star-button";
 import { Button } from "@/components/ui/button";
 import { getContact } from "@/lib/contacts";
 import { createClient } from "@/lib/supabase/server";
@@ -38,7 +39,14 @@ export default async function ContactPage({
         ← Contacts
       </Link>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">{contact.name}</h1>
+        <div className="flex items-center gap-2">
+          <StarButton
+            contactId={contact.id}
+            name={contact.name}
+            isStarred={contact.stars !== null}
+          />
+          <h1 className="text-xl font-semibold">{contact.name}</h1>
+        </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
