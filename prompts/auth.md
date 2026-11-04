@@ -29,3 +29,19 @@ Response summary: used the connector to find the new networking-tracker project 
 Context: the student tested sign up, log out, the logged-out redirect, a wrong password, and log in on the local app. The agent then confirmed one matching row in auth.users and users, which shows the trigger works.
 
 Response summary: committed feature 1, pushed the branch, and drafted the PR description for review.
+
+## Prompt 5: the student catches a confirmation email
+
+> Sorry, ignoring your entire last message for a second. You can see here that I toggled off "Confirm email," but from that signup I just tested, it looks like I did just get a confirmation email.
+
+What went sideways: the student noticed something the agent had missed. The auth logs show the sign-up ran at 05:13:14 UTC and sent an email, then the auth settings reloaded at 05:14:04, 50 seconds later, which fits Confirm email being turned off after the sign-up. Next came a login, a logout, and a wrong password, but no later successful login. So the agent's earlier "Your test passed" claimed too much. A row in `users` proved the trigger works, not the whole test, and Prompt 4's context above overstates what was confirmed.
+
+Response summary: explained the timeline, corrected the claim, and asked the student to rerun the sign-up with Confirm email off, plus the final login.
+
+## Prompt 6: the retest
+
+> When I first tried to sign up, I did, in fact, see that the "We couldn't log you in" error popped up. I went back and didn't turn off the confirm email again. I just saved it again, and then I came back and did the sign-up thing. I'm wondering if maybe that first time I actually did just sign up, and the second time is when I logged in.
+>
+> I just signed up with another email, and I did not get a confirm email.
+
+Response summary: the logs support the student's explanation: the first attempt created the account and the second was a login. The new account had no confirmation email sent, was logged in straight away, has a `users` row, and logged out successfully. Still unproven: logging in again with correct details right after logging out. That will be checked on the live URL.
