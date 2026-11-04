@@ -132,3 +132,26 @@ Both tests use made-up data only.
 4. Grouping by person on the home screen, falling back to a simple list that shows the person and company on each row.
 
 **Out of scope for now:** Gmail access, a browser extension, natural-language input with AI, and email reminders. I'm very unsure I can build the AI and browser extension pieces. Company and application tables are also a future iteration. For now, company is plain text, so "Google" and "google" count as different companies.
+
+## Plan vs. Reality
+
+Added at the end of the project. The sections above are the original plan, unedited.
+
+| Planned feature | Shipped / Changed / Cut | Status (Done/Backlogged) | Learning | What changed and why (one line) |
+|---|---|---|---|---|
+| 1. Sign up and login | Shipped | Done | Email confirmation has to be off, and sending email may require additional tools. | Built as planned; I also turned off email confirmation so live sign-ups don't get stuck. |
+| 2. Data model | Changed | Done | It's important to get this right upfront, and the database can add data validation. | User IDs became `uuid` and timestamps include the time to fit Supabase, and the agent added database rules so rows can only point to the same user's rows. |
+| 3. Manage contacts | Shipped | Done | Moving Add contact up top and removing it from pages improved the experience. | Built as planned, using the browser's built-in confirm box for the delete warning. |
+| 4. Validation | Changed | Done | What's required or optional isn't always clear on the front end. | Added a friendly invalid-email message after my stranger test, which the plan didn't include. |
+| 5. Stars | Shipped | Done | A binary star may not be sufficient where a ranking or rating system is needed. | Built as planned; the agent's first version crashed the contact list, and it fixed that before the PR. |
+| 6. Find contacts | Shipped | Done | Certain fields could cause problems later, like google and Google counting as different companies. | Built as planned, including the plain-text company limit the plan predicted. |
+| 7. Log conversations | Shipped | Done | "Today" depends on where the server runs, so dates need a deliberate time zone decision. | Built as planned; "today" uses a fixed California time zone, which was the agent's choice. |
+| 8. Tasks | Shipped | Done | Most tasks are a few repeating types, so defaults you can type over could save effort. | Built as planned, with defaults the agent chose: medium priority, To do, and due today. |
+| 9. Needs attention and coming up | Changed | Done | Using the app showed me things planning didn't, like the page's real name and wanting to collapse sections. | I renamed the home screen to Tasks and made Coming up collapsible after using it myself. |
+| 10. Dashboard | Shipped | Done | Two correct numbers can look like they disagree when one counts by week and the other by month. | Built as planned; the agent chose the 8-week range and Monday week start. |
+| Test 1: Data isolation | Changed | Done | A passing test only proves what it checks: this one covers the database rule, not the page. | The test checks the database lookup rather than loading the page, and it runs on the real project because the free plan's project limit made a separate database hard. |
+| Test 2: Dashboard stat | Changed | Done | Breaking the code on purpose shows a test can catch a real mistake, not just that it passes. | The test checks the code that calculates the number rather than loading the dashboard, and it also runs on the real project. |
+| Not planned: Add contact button in the header | Added | Done | A helpful first-time prompt can hide that the action is hard to find later. | I added it after seeing the blank home page's prompt was the main thing pointing to adding a contact. |
+| Not planned: Notes hint on the contact form | Added | Done | People use the first field that fits, so guidance has to come before that step. | My stranger test friend wrote his action in notes and then entered it again as a task. |
+| Cut list (section 7) | Nothing cut | Done | With an agent building quickly, nothing needed cutting, and my review time became the real limit. | All four extras I'd have cut first shipped, including conversation links, the company filter, Coming up, and grouping by person. |
+| Future: Gmail or an email plugin, browser extension, AI input, email reminders, company and application tables, connecting an ATS tool | Not built, as planned | Backlogged | My friend asked for automation unprompted, which suggests it matters, but that's only one person. Long term, I want this to be all-in-one for applications, company research, and outreach. | Left out on purpose; my stranger test friend also asked for automation through Granola, and I added the ATS connection as a later idea. |
