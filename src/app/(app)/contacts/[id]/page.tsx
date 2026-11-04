@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { ConversationForm } from "@/components/conversation-form";
+import { ConversationList } from "@/components/conversation-list";
 import { DeleteContactButton } from "@/components/delete-contact-button";
 import { StarButton } from "@/components/star-button";
 import { Button } from "@/components/ui/button";
 import { getContact } from "@/lib/contacts";
+import type { Conversation } from "@/lib/conversations";
+import { todayString } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ContactPage({
@@ -12,16 +16,19 @@ export default async function ContactPage({
   const contact = await getContact(id);
 
   const supabase = await createClient();
-  const [{ count: conversationCount }, { count: taskCount }] = await Promise.all([
+  const [{ data: conversationRows }, { count: taskCount }] = await Promise.all([
     supabase
       .from("conversations")
-      .select("*", { count: "exact", head: true })
-      .eq("contact_id", contact.id),
+      .select("*")
+      .eq("contact_id", contact.id)
+      .order("date", { ascending: false })
+      .order("created_at", { ascending: false }),
     supabase
       .from("tasks")
       .select("*", { count: "exact", head: true })
       .eq("contact_id", contact.id),
   ]);
+  const conversations: Conversation[] = conversationRows ?? [];
 
   const details = [
     { label: "Company", value: contact.company },
@@ -58,7 +65,7 @@ export default async function ContactPage({
           <DeleteContactButton
             id={contact.id}
             name={contact.name}
-            conversationCount={conversationCount ?? 0}
+            conversationCount={conversations.length}
             taskCount={taskCount ?? 0}
           />
         </div>
@@ -71,6 +78,12 @@ export default async function ContactPage({
           </div>
         ))}
       </dl>
+
+      <section className="mt-8 space-y-3">
+        <h2 className="text-lg font-semibold">Conversations</h2>
+        <ConversationForm contactId={contact.id} today={todayString()} />
+        <ConversationList conversations={conversations} />
+      </section>
     </div>
   );
 }
