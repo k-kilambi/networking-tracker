@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { TaskGroupList } from "@/components/task-group-list";
 import { Button } from "@/components/ui/button";
@@ -60,8 +61,17 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
               <TaskGroupList tasks={needsAttention} />
             )}
           </section>
-          <section className="mt-8">
-            <h2 className="mb-2 text-lg font-semibold">Coming up in the next 7 days</h2>
+          <details open className="group mt-8">
+            <summary className="mb-2 flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+              <ChevronRight
+                aria-hidden="true"
+                className="size-4 text-muted-foreground transition-transform group-open:rotate-90"
+              />
+              <h2 className="text-lg font-semibold">
+                Coming up in the next 7 days
+                <span className="font-normal text-muted-foreground"> ({comingUp.length})</span>
+              </h2>
+            </summary>
             {comingUp.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 Nothing coming up{priority ? ` at ${priority} priority` : ""}.
@@ -69,7 +79,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
             ) : (
               <TaskGroupList tasks={comingUp} />
             )}
-          </section>
+          </details>
         </>
       )}
     </div>
