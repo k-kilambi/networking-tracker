@@ -72,12 +72,26 @@ The junction table connecting users and contacts. There's one table for everyone
 
 A user can star a given contact only once.
 
+### `idea_upvotes`
+
+One row per upvote on a future idea in the Automate Everything popup. The ideas themselves live in the app's code, not in a table.
+
+| Column | Type | Required | Notes |
+|---|---|---|---|
+| id | number | Yes | Primary key |
+| user_id | uuid | Yes | Foreign key to `users` |
+| idea_id | text | Yes | One of the six ideas in `src/lib/future-ideas.ts` |
+| created_at | timestamp | Yes | |
+
+A user can upvote a given idea only once, and can't remove an upvote.
+
 ## How the tables relate
 
 ```mermaid
 erDiagram
     users ||--o{ contacts : owns
     users ||--o{ stars : makes
+    users ||--o{ idea_upvotes : makes
     contacts ||--o{ stars : receives
     contacts ||--o{ conversations : has
     contacts ||--o{ tasks : has
@@ -106,3 +120,4 @@ The agent built the tables and columns I designed, with these differences:
 | Not in the plan | Rows can only point to the same user's rows | Row Level Security alone wouldn't check the row being pointed to |
 | Not in the plan | One star per user per contact | Stops a double-click creating two stars |
 | Not in the plan | Deleting a conversation keeps its tasks | The plan only covered deleting a contact |
+| Not in the plan | `idea_upvotes` table | I added upvotes on future ideas after submitting, to see which ones people want |
