@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logOut } from "@/app/actions";
+import { AutomateEverythingButton } from "@/components/automate-everything-button";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 
@@ -35,7 +36,8 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
               Dashboard
             </Link>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <AutomateEverythingButton />
             <Button size="sm" nativeButton={false} render={<Link href="/contacts/new" />}>
               Add contact
             </Button>
