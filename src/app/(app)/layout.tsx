@@ -15,6 +15,9 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     redirect("/login");
   }
 
+  const { data: upvotes } = await supabase.from("idea_upvotes").select("idea_id");
+  const upvotedIdeaIds = (upvotes ?? []).map((upvote) => upvote.idea_id as string);
+
   return (
     <>
       <header className="border-b border-border bg-surface">
@@ -37,7 +40,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
             </Link>
           </nav>
           <div className="flex flex-wrap items-center gap-2">
-            <AutomateEverythingButton />
+            <AutomateEverythingButton upvotedIdeaIds={upvotedIdeaIds} />
             <Button size="sm" nativeButton={false} render={<Link href="/contacts/new" />}>
               Add contact
             </Button>
